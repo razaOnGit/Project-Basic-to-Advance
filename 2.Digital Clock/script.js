@@ -1,0 +1,3 @@
+function clock(
+const = getelementbyid()
+)
