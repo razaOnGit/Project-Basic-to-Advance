@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .box {
+            background-color: grey;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #c36c10; /* Darker green */
+        }
+</style>
+</head>
+<body>
+    <div class="box">
+        <h1>Stopwatch</h1>
+        <p id="time">00:00:00</p>
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <button id="reset">Reset</button>
+    </div>
+    <script>
+const timeDisplay = document.getElementById('time');
+const startButton = document.getElementById('start');
+const stopButton = document.getElementById('stop');
+const resetButton = document.getElementById('reset');
+let timer;
+let seconds = 0;
+function updateTime() {
+    seconds++;
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    const milliseconds = Math.floor((seconds % 1) * 100);
+    timeDisplay.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}:${String(milliseconds).padStart(2, '0')}`;
+}
+startButton.addEventListener('click', () => {
+    if (!timer) {
+        timer = setInterval(updateTime, 1000);
+    }
+});
+stopButton.addEventListener('click', () => {
+    clearInterval(timer);
+    timer = null;
+});
+resetButton.addEventListener('click', () => {
+    clearInterval(timer);
+    timer = null;
+    seconds = 0;
+    timeDisplay.textContent = '00:00:00';
+});
+</script>
+</body>
+</html>
+
+
+<!--
+- The calculation for milliseconds was incorrect.
+
+Instead, we can track the time elapsed in milliseconds. We can use:
+
+- `Date.now()` to get the current timestamp in milliseconds.
+
+- When starting, we record the start time and also account for any previously elapsed time (if paused and resumed).
+
+- On each update, we calculate how many milliseconds have passed since the start and add to the elapsed time.
+
+But if you want a simpler approach without using `Date.now()` and without tracking elapsed time across pauses, we can do:
+
+Approach for a simpler stopwatch (without pause/resume functionality):
+
+```javascript
+
+let startTime;
+
+let elapsedTime = 0;
+
+let timer;
+
+function updateTime() {
+
+// Calculate how much time has passed since start in milliseconds
+
+elapsedTime = Date.now() - startTime;
+
+// Convert to hours, minutes, seconds, milliseconds
+
+const totalSeconds = Math.floor(elapsedTime / 1000);
+
+const hours = Math.floor(totalSeconds / 3600);
+
+const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+const seconds = totalSeconds % 60;
+
+const milliseconds = Math.floor(elapsedTime % 1000);
+
+// Format and display
+
+timeDisplay.textContent =
+
+`${String(hours).padStart(2, '0')}:` +
+
+`${String(minutes).padStart(2, '0')}:` +
+
+`${String(seconds).padStart(2, '0')}:` +
+
+`${String(milliseconds).padStart(3, '0').slice(0, 2)}`; // Show only 2 digits for ms
+
+}
