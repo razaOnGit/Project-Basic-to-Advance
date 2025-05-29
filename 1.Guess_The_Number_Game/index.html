@@ -41,6 +41,7 @@
             border-radius: 10px;
             margin: 20px auto;
             background-color: #f9f9f9;
+            text-overflow: ellipse;
            
         }
         .box p2, .box p3, .box p4 {
@@ -98,6 +99,11 @@
             margin-top: 20px;
             font-size: 1.2em;
             color: #333;
+            text-overflow: ellipsis;
+    overflow: hidden;
+        }
+        #resultMessage {
+            text-overflow: elipse;
         }
     </style>
 </head>
@@ -114,12 +120,13 @@
             <input type="number" id="guessInput" placeholder="Enter your guess" />
            <br>
             <button id="submitGuess">Submit Guess</button>
+
             <div class="circle">   
-            <p id="score"> Display Guess Number</p>
+            <p id="score"> Attempts Left: 100</p>
            </div>
            <div class="dispaly">
-            <p id="resultMessage">Attempts Left: 100</p>
-            <p id="gameOverMessage"></p>
+            <p id="resultMessage"></p>
+           
            </div>
         </div>
     </div>
