@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .box {
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+        }
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 34px;
+            transition: background 0.3s;
+            margin: 0 auto 20px auto;
+            background-color: #ccc;
+            border-radius: 34px;
+            cursor: pointer;
+        }
+        .toggle-switch.on {
+            background-color: #4caf50;
+        }
+        .toggle-knob{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 34px;
+            height: 34px;
+            background-color: #751818;
+            border-radius: 50%;
+            transition: left 0.3s ;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .toggle-switch.on .toggle-knob {
+            left: 32px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Light On/Off</h1>
+        <p id="status">Light is OFF</p>
+        <div class="toggle-switch" id="toggleSwitch">
+            <div class="toggle-knob">
+
+            </div>
+        </div>
+    </div>
+
+        <script>
+            const status = document.getElementById('status');
+        const toggleSwitch = document.getElementById('toggleSwitch');
+        let isLightOn = false;
+        toggleSwitch.addEventListener('click', () => {
+            isLightOn = !isLightOn;
+            status.textContent = `Light is ${isLightOn ? 'ON' : 'OFF'}`;
+            document.body.style.backgroundColor = isLightOn ? 'yellow' : 'black';
+            toggleSwitch.classList.toggle('on', isLightOn);
+        });
+        </script>
+    </div>
+</body>
+</html>
