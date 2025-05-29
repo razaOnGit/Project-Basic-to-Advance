@@ -1,3 +1,0 @@
-function clock(
-const = getelementbyid()
-)
