@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple TODO List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #todo-input {
+            padding: 8px;
+            width: 70%;
+        }
+        #add-btn {
+            padding: 8px 15px;
+        }
+        #todo-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        .delete-btn {
+            color: red;
+            cursor: pointer;
+        }
+        .completed .todo-text {
+    text-decoration: line-through;
+    color: #c60505;
+}
+   todo.todo-text {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        .todo-item:hover {
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>My TODO List</h1>
+    <div>
+        <input type="text" id="todo-input" placeholder="Add a new task">
+        <button id="add-btn">Add</button>
+    </div>
+    <ul id="todo-list"></ul>
+
+    <script >
+        
+        // Get DOM elements
+const todoInput = document.getElementById('todo-input');
+const addButton = document.getElementById('add-btn');
+const todoList = document.getElementById('todo-list');
+
+// Array to store todos
+let todos = [];
+
+// Function to add a new todo
+function addTodo() {
+    const todoText = todoInput.value.trim();
+    
+    if (todoText) {
+        // Create new todo object
+        const newTodo = {
+            id: Date.now(), // Unique ID
+            text: todoText,
+            completed: false
+        };
+        
+        // Add to array
+        todos.push(newTodo);
+        
+        // Save to localStorage
+        localStorage.setItem('todos', JSON.stringify(todos));
+        
+        // Render todos
+        renderTodos();
+        
+        // Clear input
+        todoInput.value = '';
+    }
+}
+
+// Function to delete a todo
+function deleteTodo(id) {
+    todos = todos.filter(todo => todo.id !== id);
+    localStorage.setItem('todos', JSON.stringify(todos));
+    renderTodos();
+}
+
+// Function to render todos
+function renderTodos() {
+    // Clear the list first
+    todoList.innerHTML = ''; // This is the only innerHTML we need
+    
+    if (todos.length === 0) {
+        const emptyMsg = document.createElement('li');
+        emptyMsg.textContent = 'No tasks yet!';
+        todoList.appendChild(emptyMsg);
+        return;
+    }
+    
+    // Create list items for each todo
+    todos.forEach(todo => {
+        const li = document.createElement('li');
+        li.className = 'todo-item';
+        
+        const span = document.createElement('span');
+        span.textContent = todo.text;
+        
+        const deleteBtn = document.createElement('span');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = '❌';
+        deleteBtn.onclick = () => deleteTodo(todo.id);
+        
+        li.appendChild(span);
+        li.appendChild(deleteBtn);
+        
+        todoList.appendChild(li);
+    });
+}
+
+// Load todos when page loads
+function loadTodos() {
+    const storedTodos = localStorage.getItem('todos');
+    if (storedTodos) {
+        todos = JSON.parse(storedTodos);
+    }
+    renderTodos();
+}
+
+// Event listeners
+addButton.addEventListener('click', addTodo);
+todoInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') 
+    addTodo();
+});
+
+loadTodos();
+    </script>
+</body>
+</html>
