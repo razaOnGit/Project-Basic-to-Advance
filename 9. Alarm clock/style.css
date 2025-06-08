@@ -210,6 +210,39 @@
 .show-block button:hover {
     background: #e0e0e0;
 }
+.audio-block {
+   position: fixed;
+    top: 60px; /* adjust as needed */
+    right: 229px; /* adjust as needed */
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    padding: 16px 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.audio-select {
+    padding: 5px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+
+}
+.play-audio {
+    padding: 6px 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 @media screen and (max-width: 768px) {
    .show-block {
        right: 60px; /* adjust as needed */
@@ -221,6 +254,8 @@
     }
     #time {
         font-size: 1.5em;
+
     }
+
 
 }

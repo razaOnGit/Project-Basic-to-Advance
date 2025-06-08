@@ -163,7 +163,92 @@ dashBoard.addEventListener('click', () => {
     settingbtn.addEventListener('click', () => {
         alert('Settings are not available yet.');
     });
-    musicbtn.addEventListener('click', () => {
-        alert('Audio is playing.');
+
+
+ musicbtn.addEventListener('click', () => {
+    // Remove existing audio block if it exists
+    const existingAudioBlock = document.querySelector('.audio-block');
+    if (existingAudioBlock) {
+        existingAudioBlock.remove(); 
+        return; 
+    }
+
+    // Create new audio block with radio-style controls
+    const audio = document.createElement('div');
+    audio.className = 'audio-block';
+    audio.innerHTML = `
+        <select id="audio-select">
+            <option value="">Select a sound</option>
+            <option value="assets/alarm-clock-beep.wav">Beep</option>
+            <option value="assets/alert-alarm.wav">Alert</option>
+            <option value="assets/battleship-alarm.wav">Battleship</option>
+            <option value="assets/casino-win-alarm.wav">Casino win</option>
+            <option value="assets/casino-jackpot-alarm.wav">Casino Jackpot</option>
+            <option value="assets/digital-clock.wav">Clock Tick</option>
+            <option value="assets/emergency-alert.wav">Emergency</option>
+            <option value="assets/facility-alarm-sound.wav">Facility Alarm</option>
+            <option value="assets/morning-clock.wav">Morning Clock</option>
+            <option value="assets/retro-game.wav"> Game</option>
+            <option value="assets/rooster-crowing.wav">Rooster</option>
+            <option value="assets/slot-machine-a.wav">Machine Slot</option>
+            <option value="assets/slot-machine.wav">Machine Slot B</option>
+            <option value="assets/spaceship-alarm.wav">Siren</option>
+        </select>
+        <button id="play-btn">▶ Play</button>
+        <button id="stop-btn">■ Stop</button>
+        <div id="now-playing">No sound selected</div>
+    `;
+    document.body.appendChild(audio);
+
+    // Create audio element (if it doesn't exist in HTML)
+    let radioPlayer = document.getElementById('radio-player');
+    if (!radioPlayer) {
+        radioPlayer = document.createElement('audio');
+        radioPlayer.id = 'radio-player';
+        radioPlayer.loop = true; // Make it loop like a radio
+        document.body.appendChild(radioPlayer);
+    }
+
+    const audioSelect = document.getElementById('audio-select');
+    const playBtn = document.getElementById('play-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const nowPlayingDisplay = document.getElementById('now-playing');
+
+    // When selection changes
+    audioSelect.addEventListener('change', () => {
+        const selectedAudio = audioSelect.value;
+        if (selectedAudio) {
+            radioPlayer.src = selectedAudio;
+            radioPlayer.load();
+            nowPlayingDisplay.textContent = `Selected: ${audioSelect.options[audioSelect.selectedIndex].text}`;
+        } else {
+            nowPlayingDisplay.textContent = "No sound selected";
+        }
     });
+
+    // Play button
+    playBtn.addEventListener('click', () => {
+        if (audioSelect.value) {
+            radioPlayer.play()
+                .then(() => {
+                    nowPlayingDisplay.textContent = `Now Playing: ${audioSelect.options[audioSelect.selectedIndex].text}`;
+                })
+                .catch(e => {
+                    console.error("Playback failed:", e);
+                    alert("Could not play sound. Please try again.");
+                });
+        } else {
+            alert("Please select a sound first");
+        }
+    });
+
+    // Stop button
+    stopBtn.addEventListener('click', () => {
+        radioPlayer.pause();
+        radioPlayer.currentTime = 0;
+        nowPlayingDisplay.textContent = audioSelect.value 
+            ? `Ready: ${audioSelect.options[audioSelect.selectedIndex].text}` 
+            : "No sound selected";
+    });
+});
 });
