@@ -29,7 +29,7 @@ resetbtn.addEventListener('click',()=>{
     seconds=0;
     timeDisplay.textContent='00:00:00'
 });
-
+/// Alarm Clock Functionality
 const currentTimeDisplay = document.getElementById('current-time');
 const alarmInput = document.getElementById('alarm-time'); // pehle se visible input
 const setAlarmBtn = document.getElementById('set-alarm');
@@ -41,7 +41,7 @@ const alarmContainer = document.getElementById('alarm-container');
 let alarmTime = null;
 let alarmTimeout = null;
 let alarm = JSON.parse(localStorage.getItem('alarm')) || [];
-
+let activeAlarmAudio = null;
 function updateCurrentTime() {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, '0');
@@ -65,6 +65,8 @@ function setAlarm() {
             alarmTimeout = setTimeout(() => {
                 alarmSound.play();
                 alert('Alarm ringing!');
+                 alarmSound.pause(); // Stop when alert is dismissed
+                alarmSound.currentTime = 0;
             }, timeToAlarm);
         }
         setAlarmBtn.disabled = true;
@@ -77,6 +79,11 @@ function clearAlarm() {
         clearTimeout(alarmTimeout);
         alarmTimeout = null;
     }
+        if (activeAlarmAudio) {
+        activeAlarmAudio.pause();
+        activeAlarmAudio.currentTime = 0;
+        activeAlarmAudio = null;
+    }
     alarmTime = null;
     alarmInput.value = '';
     setAlarmBtn.disabled = false;
@@ -84,12 +91,32 @@ function clearAlarm() {
 }
 
 
-function displayAlarms() {
+function displayAlarms(savedTime = '', savedSound = '') {
+    //  if (!savedTime || !savedSound) {
+    //     return; 
+    // }
     const alarmInputBlock = document.createElement('div');
     alarmInputBlock.className = 'alarm-block';
 
     alarmInputBlock.innerHTML = `
-        <input type="time" class="alarm-time" />
+        <input type="time" class="alarm-time" value="${savedTime}" />
+        <select class="alarm-sound-select">
+            <option value="">Select a sound</option>
+            <option value="assets/alarm-clock-beep.wav">Beep</option>
+            <option value="assets/alert-alarm.wav">Alert</option>
+            <option value="assets/battleship-alarm.wav">Battleship</option>
+            <option value="assets/casino-win-alarm.wav">Casino win</option>
+            <option value="assets/casino-jackpot-alarm.wav">Casino Jackpot</option>
+            <option value="assets/digital-clock.wav">Clock Tick</option>
+            <option value="assets/emergency-alert.wav">Emergency</option>
+            <option value="assets/facility-alarm-sound.wav">Facility Alarm</option>
+            <option value="assets/morning-clock.wav">Morning Clock</option>
+            <option value="assets/retro-game.wav">Game</option>
+            <option value="assets/rooster-crowing.wav">Rooster</option>
+            <option value="assets/slot-machine-a.wav">Machine Slot</option>
+            <option value="assets/slot-machine.wav">Machine Slot B</option>
+            <option value="assets/spaceship-alarm.wav">Siren</option>
+        </select>
         <button class="set-alarm-btn">Set</button>
         <button class="delete-alarm-btn">Delete</button>
     `;
@@ -97,37 +124,83 @@ function displayAlarms() {
     alarmContainer.appendChild(alarmInputBlock);
 
     const input = alarmInputBlock.querySelector('.alarm-time');
+    const soundSelect = alarmInputBlock.querySelector('.alarm-sound-select');
     const setBtn = alarmInputBlock.querySelector('.set-alarm-btn');
     const deleteBtn = alarmInputBlock.querySelector('.delete-alarm-btn');
 
-    // Set alarm
-    setBtn.addEventListener('click', () => {
-        const alarmValue = input.value;
-        if (!alarmValue) return;
+    // Pre-fill from saved data
+    if (savedTime && savedSound) {
+        input.value = savedTime;
+        soundSelect.value = savedSound;
 
-        const [hours, minutes] = alarmValue.split(':').map(Number);
+        input.disabled = true;
+        soundSelect.disabled = true;
+        setBtn.disabled = true;
+
+        // Schedule alarm
+        const [hours, minutes] = savedTime.split(':').map(Number);
         const now = new Date();
         now.setHours(hours, minutes, 0, 0);
         const alarmTime = now.getTime();
         const timeToAlarm = alarmTime - Date.now();
 
         if (timeToAlarm > 0) {
-            setTimeout(() => {
-                alarmSound.play();
-                alert(`⏰ Alarm for ${alarmValue} is ringing!`);
+             setTimeout(() => {
+                activeAlarmAudio = new Audio(savedSound);
+                 activeAlarmAudio.loop = true;
+                activeAlarmAudio.play()
+                    .then(() => {
+                        const userConfirmed = confirm(`⏰ Alarm for ${savedTime} is ringing! Click OK to stop.`);
+                        if (userConfirmed) {
+                            activeAlarmAudio.pause();
+                            activeAlarmAudio.currentTime = 0;
+                            activeAlarmAudio = null;
+                        }
+                    })
+                    .catch(e => console.error("Alarm sound failed:", e));
+            }, timeToAlarm);
+        }
+    }
+
+    // Set button listener for new alarms
+    setBtn.addEventListener('click', () => {
+    const alarmValue = input.value;
+    if (!alarmValue || !soundSelect.value) return;
+
+    const [hours, minutes] = alarmValue.split(':').map(Number);
+    const now = new Date();
+    now.setHours(hours, minutes, 0, 0);
+    const alarmTime = now.getTime();
+    const timeToAlarm = alarmTime - Date.now();
+
+    if (timeToAlarm > 0) {
+       setTimeout(() => {
+                activeAlarmAudio = new Audio(soundSelect.value);
+                 activeAlarmAudio.loop = true;
+                activeAlarmAudio.play()
+                    .then(() => {
+                        const userConfirmed = confirm(`⏰ Alarm for ${alarmValue} is ringing! Click OK to stop.`);
+                        if (userConfirmed) {
+                            activeAlarmAudio.pause();
+                            activeAlarmAudio.currentTime = 0;
+                            activeAlarmAudio = null;
+                        }
+                    })
+                    .catch(e => console.error("Alarm sound failed:", e));
             }, timeToAlarm);
         }
 
-        input.disabled = true;
-        setBtn.disabled = true;
+    input.disabled = true;
+    soundSelect.disabled = true;
+    setBtn.disabled = true;
+    alarm.push({ time: alarmValue, sound: soundSelect.value });
+    localStorage.setItem("alarm", JSON.stringify(alarm)); // Ye sahi hai
+});
 
-        alarm.push({ time: alarmValue });
-        localStorage.setItem('alarm', JSON.stringify(alarm));
-    });
-
-    // Delete alarm block
     deleteBtn.addEventListener('click', () => {
         alarmContainer.removeChild(alarmInputBlock);
+        alarm = alarm.filter(a => a.time !== input.value || a.sound !== soundSelect.value);
+        localStorage.setItem("alarm", JSON.stringify(alarm));
     });
 }
 
@@ -138,12 +211,19 @@ window.onload = function () {
 
     setAlarmBtn.addEventListener('click', setAlarm);
     clearAlarmBtn.addEventListener('click', clearAlarm);
-    
+
+    // Show saved alarms properly
+    if (alarm.length > 0) {
+        alarm.forEach(({ time, sound }) => displayAlarms(time, sound));
+    }
 
     addAlarm.addEventListener('click', () => {
-        displayAlarms(); // <- Har baar naya input block create karega
+        displayAlarms(); // new block
     });
-}
+};
+
+
+// Dashboard Functionality + settings and audio controls
 const dashBoard = document.getElementById('radix-«rnb»');
 dashBoard.addEventListener('click', () => {
      const existing = document.querySelector('.show-block');
@@ -193,6 +273,7 @@ dashBoard.addEventListener('click', () => {
             <option value="assets/slot-machine-a.wav">Machine Slot</option>
             <option value="assets/slot-machine.wav">Machine Slot B</option>
             <option value="assets/spaceship-alarm.wav">Siren</option>
+
         </select>
         <button id="play-btn">▶ Play</button>
         <button id="stop-btn">■ Stop</button>
