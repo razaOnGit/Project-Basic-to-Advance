@@ -1,33 +1,32 @@
-const timeDisplay=document.getElementById('time');
-const startbtn =document.getElementById('start');
+const timeDisplay = document.getElementById('time');
+const startbtn = document.getElementById('start');
 const stopbtn = document.getElementById('stop');
 const resetbtn = document.getElementById('reset');
 let timer;
-let seconds=0;
-function updatetime()
-{
+let seconds = 0;
+function updatetime() {
     seconds++;
- const hours = Math.floor(seconds / 3600);
+    const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-   // const milliseconds = Math.floor((seconds % 1) * 100);
+    // const milliseconds = Math.floor((seconds % 1) * 100);
     timeDisplay.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-}    
-startbtn.addEventListener('click',()=>{
- if(!timer){
-    timer = setInterval( updatetime, 1000);
- }
+}
+startbtn.addEventListener('click', () => {
+    if (!timer) {
+        timer = setInterval(updatetime, 1000);
+    }
 });
-stopbtn.addEventListener('click',() =>{
+stopbtn.addEventListener('click', () => {
     clearInterval(timer);
-    timer=null;
+    timer = null;
 }
 );
-resetbtn.addEventListener('click',()=>{
+resetbtn.addEventListener('click', () => {
     clearInterval(timer);
-    timer=null;
-    seconds=0;
-    timeDisplay.textContent='00:00:00'
+    timer = null;
+    seconds = 0;
+    timeDisplay.textContent = '00:00:00'
 });
 /// Alarm Clock Functionality
 const currentTimeDisplay = document.getElementById('current-time');
@@ -65,7 +64,7 @@ function setAlarm() {
             alarmTimeout = setTimeout(() => {
                 alarmSound.play();
                 alert('Alarm ringing!');
-                 alarmSound.pause(); // Stop when alert is dismissed
+                alarmSound.pause(); // Stop when alert is dismissed
                 alarmSound.currentTime = 0;
             }, timeToAlarm);
         }
@@ -79,7 +78,7 @@ function clearAlarm() {
         clearTimeout(alarmTimeout);
         alarmTimeout = null;
     }
-        if (activeAlarmAudio) {
+    if (activeAlarmAudio) {
         activeAlarmAudio.pause();
         activeAlarmAudio.currentTime = 0;
         activeAlarmAudio = null;
@@ -145,9 +144,9 @@ function displayAlarms(savedTime = '', savedSound = '') {
         const timeToAlarm = alarmTime - Date.now();
 
         if (timeToAlarm > 0) {
-             setTimeout(() => {
+            setTimeout(() => {
                 activeAlarmAudio = new Audio(savedSound);
-                 activeAlarmAudio.loop = true;
+                activeAlarmAudio.loop = true;
                 activeAlarmAudio.play()
                     .then(() => {
                         const userConfirmed = confirm(`⏰ Alarm for ${savedTime} is ringing! Click OK to stop.`);
@@ -164,19 +163,19 @@ function displayAlarms(savedTime = '', savedSound = '') {
 
     // Set button listener for new alarms
     setBtn.addEventListener('click', () => {
-    const alarmValue = input.value;
-    if (!alarmValue || !soundSelect.value) return;
+        const alarmValue = input.value;
+        if (!alarmValue || !soundSelect.value) return;
 
-    const [hours, minutes] = alarmValue.split(':').map(Number);
-    const now = new Date();
-    now.setHours(hours, minutes, 0, 0);
-    const alarmTime = now.getTime();
-    const timeToAlarm = alarmTime - Date.now();
+        const [hours, minutes] = alarmValue.split(':').map(Number);
+        const now = new Date();
+        now.setHours(hours, minutes, 0, 0);
+        const alarmTime = now.getTime();
+        const timeToAlarm = alarmTime - Date.now();
 
-    if (timeToAlarm > 0) {
-       setTimeout(() => {
+        if (timeToAlarm > 0) {
+            setTimeout(() => {
                 activeAlarmAudio = new Audio(soundSelect.value);
-                 activeAlarmAudio.loop = true;
+                activeAlarmAudio.loop = true;
                 activeAlarmAudio.play()
                     .then(() => {
                         const userConfirmed = confirm(`⏰ Alarm for ${alarmValue} is ringing! Click OK to stop.`);
@@ -190,12 +189,12 @@ function displayAlarms(savedTime = '', savedSound = '') {
             }, timeToAlarm);
         }
 
-    input.disabled = true;
-    soundSelect.disabled = true;
-    setBtn.disabled = true;
-    alarm.push({ time: alarmValue, sound: soundSelect.value });
-    localStorage.setItem("alarm", JSON.stringify(alarm)); // Ye sahi hai
-});
+        input.disabled = true;
+        soundSelect.disabled = true;
+        setBtn.disabled = true;
+        alarm.push({ time: alarmValue, sound: soundSelect.value });
+        localStorage.setItem("alarm", JSON.stringify(alarm)); // Ye sahi hai
+    });
 
     deleteBtn.addEventListener('click', () => {
         alarmContainer.removeChild(alarmInputBlock);
@@ -203,8 +202,9 @@ function displayAlarms(savedTime = '', savedSound = '') {
         localStorage.setItem("alarm", JSON.stringify(alarm));
     });
 }
-
-
+function savetolocalStorage() {
+    localStorage.setItem('alarm', JSON.stringify(alarm));
+}
 window.onload = function () {
     updateCurrentTime();
     setInterval(updateCurrentTime, 1000);
@@ -226,37 +226,37 @@ window.onload = function () {
 // Dashboard Functionality + settings and audio controls
 const dashBoard = document.getElementById('radix-«rnb»');
 dashBoard.addEventListener('click', () => {
-     const existing = document.querySelector('.show-block');
+    const existing = document.querySelector('.show-block');
     if (existing) {
         existing.remove(); // Close if already open
         return;
     }
-    const showBlock=document.createElement('div');
+    const showBlock = document.createElement('div');
     showBlock.className = 'show-block';
     showBlock.innerHTML = `
         <button id="setting">Settings</button>
         <button id="music">Audio</button>`;
     document.body.appendChild(showBlock);
     const settingbtn = document.getElementById('setting');
-    const musicbtn= document.getElementById('music');
+    const musicbtn = document.getElementById('music');
 
     settingbtn.addEventListener('click', () => {
         alert('Settings are not available yet.');
     });
 
 
- musicbtn.addEventListener('click', () => {
-    // Remove existing audio block if it exists
-    const existingAudioBlock = document.querySelector('.audio-block');
-    if (existingAudioBlock) {
-        existingAudioBlock.remove(); 
-        return; 
-    }
+    musicbtn.addEventListener('click', () => {
+        // Remove existing audio block if it exists
+        const existingAudioBlock = document.querySelector('.audio-block');
+        if (existingAudioBlock) {
+            existingAudioBlock.remove();
+            return;
+        }
 
-    // Create new audio block with radio-style controls
-    const audio = document.createElement('div');
-    audio.className = 'audio-block';
-    audio.innerHTML = `
+        // Create new audio block with radio-style controls
+        const audio = document.createElement('div');
+        audio.className = 'audio-block';
+        audio.innerHTML = `
         <select id="audio-select">
             <option value="">Select a sound</option>
             <option value="assets/alarm-clock-beep.wav">Beep</option>
@@ -279,57 +279,57 @@ dashBoard.addEventListener('click', () => {
         <button id="stop-btn">■ Stop</button>
         <div id="now-playing">No sound selected</div>
     `;
-    document.body.appendChild(audio);
+        document.body.appendChild(audio);
 
-    // Create audio element (if it doesn't exist in HTML)
-    let radioPlayer = document.getElementById('radio-player');
-    if (!radioPlayer) {
-        radioPlayer = document.createElement('audio');
-        radioPlayer.id = 'radio-player';
-        radioPlayer.loop = true; // Make it loop like a radio
-        document.body.appendChild(radioPlayer);
-    }
-
-    const audioSelect = document.getElementById('audio-select');
-    const playBtn = document.getElementById('play-btn');
-    const stopBtn = document.getElementById('stop-btn');
-    const nowPlayingDisplay = document.getElementById('now-playing');
-
-    // When selection changes
-    audioSelect.addEventListener('change', () => {
-        const selectedAudio = audioSelect.value;
-        if (selectedAudio) {
-            radioPlayer.src = selectedAudio;
-            radioPlayer.load();
-            nowPlayingDisplay.textContent = `Selected: ${audioSelect.options[audioSelect.selectedIndex].text}`;
-        } else {
-            nowPlayingDisplay.textContent = "No sound selected";
+        // Create audio element (if it doesn't exist in HTML)
+        let radioPlayer = document.getElementById('radio-player');
+        if (!radioPlayer) {
+            radioPlayer = document.createElement('audio');
+            radioPlayer.id = 'radio-player';
+            radioPlayer.loop = true; // Make it loop like a radio
+            document.body.appendChild(radioPlayer);
         }
-    });
 
-    // Play button
-    playBtn.addEventListener('click', () => {
-        if (audioSelect.value) {
-            radioPlayer.play()
-                .then(() => {
-                    nowPlayingDisplay.textContent = `Now Playing: ${audioSelect.options[audioSelect.selectedIndex].text}`;
-                })
-                .catch(e => {
-                    console.error("Playback failed:", e);
-                    alert("Could not play sound. Please try again.");
-                });
-        } else {
-            alert("Please select a sound first");
-        }
-    });
+        const audioSelect = document.getElementById('audio-select');
+        const playBtn = document.getElementById('play-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const nowPlayingDisplay = document.getElementById('now-playing');
 
-    // Stop button
-    stopBtn.addEventListener('click', () => {
-        radioPlayer.pause();
-        radioPlayer.currentTime = 0;
-        nowPlayingDisplay.textContent = audioSelect.value 
-            ? `Ready: ${audioSelect.options[audioSelect.selectedIndex].text}` 
-            : "No sound selected";
+        // When selection changes
+        audioSelect.addEventListener('change', () => {
+            const selectedAudio = audioSelect.value;
+            if (selectedAudio) {
+                radioPlayer.src = selectedAudio;
+                radioPlayer.load();
+                nowPlayingDisplay.textContent = `Selected: ${audioSelect.options[audioSelect.selectedIndex].text}`;
+            } else {
+                nowPlayingDisplay.textContent = "No sound selected";
+            }
+        });
+
+        // Play button
+        playBtn.addEventListener('click', () => {
+            if (audioSelect.value) {
+                radioPlayer.play()
+                    .then(() => {
+                        nowPlayingDisplay.textContent = `Now Playing: ${audioSelect.options[audioSelect.selectedIndex].text}`;
+                    })
+                    .catch(e => {
+                        console.error("Playback failed:", e);
+                        alert("Could not play sound. Please try again.");
+                    });
+            } else {
+                alert("Please select a sound first");
+            }
+        });
+
+        // Stop button
+        stopBtn.addEventListener('click', () => {
+            radioPlayer.pause();
+            radioPlayer.currentTime = 0;
+            nowPlayingDisplay.textContent = audioSelect.value
+                ? `Ready: ${audioSelect.options[audioSelect.selectedIndex].text}`
+                : "No sound selected";
+        });
     });
-});
 });
