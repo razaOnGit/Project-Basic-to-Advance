@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body{
+    --tw-bg-opacity: 1;
+    --tw-bg-color: #a4acbd;
+    --tw-text-opacity: 1;
+    --tw-text-color: #111827;
+    --tw-border-opacity: 1;
+    --tw-border-color: #e5e7eb;
+   background-color: #a4acbd;
+}
