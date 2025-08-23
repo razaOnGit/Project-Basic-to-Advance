@@ -177,7 +177,7 @@ const Manager = () => {
             placeholder="Enter your website URL" 
           />
           
-          <div className="flex w-full justify-between gap-8">
+          <div className="flex flex-col md:flex-row w-full justify-between gap-8">
             <input 
               value={formData.username} 
               onChange={handleChange} 
@@ -215,8 +215,8 @@ const Manager = () => {
           </button>
         </div>
 
-        <div className="passwords mt-8">
-          <h2 className="text-xl font-semibold mb-4">Your Saved Passwords</h2>
+        <div className="passwords mt-8 mb-5">
+          <h2 className="text-xl font-semibold mb-2">Your Saved Passwords</h2>
           
           {passwordArray.length === 0 && (
             <div className="text-gray-500">No passwords saved yet. Add your first password above!</div>
