@@ -2,6 +2,7 @@ import React from "react";
 import { useRef, useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Manager = () => {
   const ref = useRef();
@@ -31,15 +32,54 @@ const Manager = () => {
   };
   const savePassword = () => {
     // Logic to save password
-    setPasswordArray([...passwordArray, formData]);
-    localStorage.setItem("passwords", JSON.stringify([...passwordArray, formData]));
+    setPasswordArray([...passwordArray, { ...formData, id: uuidv4() }]);
+    localStorage.setItem("passwords", JSON.stringify([...passwordArray, { ...formData, id: uuidv4() }]));
+    setFormData({ site: "", username: "", password: "" })
+    toast('💾 Password Saved!', {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+
+    });
   }
+ const deletePassword = (id) => {
+        console.log("Deleting password with id ", id)
+        let c = confirm("Do you really want to delete this password?")
+        if(c){
+            setPasswordArray(passwordArray.filter(item=>item.id!==id))
+            localStorage.setItem("passwords", JSON.stringify(passwordArray.filter(item=>item.id!==id))) 
+            toast('Password Deleted!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+            
+    }
+  const editPassword = (id) => {
+
+    console.log("Editing password with id ", id)
+    setform(passwordArray.filter(i => i.id === id)[0])
+    setPasswordArray(passwordArray.filter(item => item.id !== id))
+
+  }
+
   const copyText = (text) => {
     toast('🦄 Copy to Clipboard !', {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
-      closeOnClick: false,
+      closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
