@@ -215,89 +215,94 @@ const Manager = () => {
           </button>
         </div>
 
-        <div className="passwords mt-8 mb-5">
+        <div className="passwords mt-5">
           <h2 className="text-xl font-semibold mb-2">Your Saved Passwords</h2>
-          
+
           {passwordArray.length === 0 && (
-            <div className="text-gray-500">No passwords saved yet. Add your first password above!</div>
+            <div className="text-gray-500">
+              No passwords saved yet. Add your first password above!
+            </div>
           )}
-          
+
           {passwordArray.length > 0 && (
-            <table className="table-auto w-full rounded-md overflow-hidden shadow-lg">
-              <thead className="bg-green-700 text-white">
-                <tr>
-                  <th className="py-3 px-4">Website</th>
-                  <th className="py-3 px-4">Username</th>
-                  <th className="py-3 px-4">Password</th>
-                  <th className="py-3 px-4">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-green-100">
-                {passwordArray.map((item, index) => (
-                  <tr key={item.id} className="hover:bg-green-200 transition-colors">
-                    <td className="p-3 text-center border border-white">
-                      <div className="flex items-center justify-center gap-2">
-                        <a href={item.site} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                          {item.site}
-                        </a>
-                        <lord-icon 
-                          className="cursor-pointer" 
-                          style={{ width: "20px", height: "20px" }}
-                          src="https://cdn.lordicon.com/xuoapdes.json"
-                          trigger="hover"
-                          onClick={() => copyText(item.site)}
-                        />
-                      </div>
-                    </td>
-                    
-                    <td className="p-3 text-center border border-white">
-                      <div className="flex items-center justify-center gap-2">
-                        <span>{item.username}</span>
-                        <lord-icon 
-                          className="cursor-pointer" 
-                          style={{ width: "20px", height: "20px" }}
-                          src="https://cdn.lordicon.com/xuoapdes.json"
-                          trigger="hover"
-                          onClick={() => copyText(item.username)}
-                        />
-                      </div>
-                    </td>
-                    
-                    <td className="p-3 text-center border border-white">
-                      <div className="flex items-center justify-center gap-2">
-                        <span>{"*".repeat(item.password.length)}</span>
-                        <lord-icon 
-                          className="cursor-pointer" 
-                          style={{ width: "20px", height: "20px" }}
-                          src="https://cdn.lordicon.com/iykgtsbt.json"
-                          trigger="hover"
-                          onClick={() => copyText(item.password)}
-                        />
-                      </div>
-                    </td>
-                    
-                    <td className="p-3 text-center border border-white">
-                      <div className="flex justify-center gap-2">
-                        <lord-icon
-                          className="cursor-pointer hover:scale-110 transition-transform"
-                          src="https://cdn.lordicon.com/gwlusjdu.json"
-                          trigger="hover"
-                          style={{ width: "25px", height: "25px" }}
-                          onClick={() => editPassword(item.id)}
-                        />
-                        <lord-icon
-                          className="cursor-pointer hover:scale-110 transition-transform"
-                          src="https://cdn.lordicon.com/skkahier.json"
-                          trigger="hover"
-                          style={{ width: "25px", height: "25px" }}
-                          onClick={() => deletePassword(item.id)}
-                        />
-                      </div>
-                    </td>
+            /* wrapper added to allow horizontal scroll on small screens */
+            <div className="w-full overflow-x-auto">
+      <table className="w-full min-w-max table-auto rounded-md mb-10">
+                <thead className="bg-green-700 text-white">
+                  <tr>
+                    <th className="py-3 px-4">Website</th>
+                    <th className="py-3 px-4">Username</th>
+                    <th className="py-3 px-4">Password</th>
+                    <th className="py-3 px-4">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-green-100">
+                  {passwordArray.map((item) => (
+                    <tr key={item.id} className="hover:bg-green-200 transition-colors">
+                      <td className="p-3 text-center border border-white">
+                        <div className="flex items-center justify-center gap-2">
+                          <a href={item.site} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                            {item.site}
+                          </a>
+                          <lord-icon 
+                            className="cursor-pointer" 
+                            style={{ width: "20px", height: "20px" }}
+                            src="https://cdn.lordicon.com/xuoapdes.json"
+                            trigger="hover"
+                            onClick={() => copyText(item.site)}
+                          />
+                        </div>
+                      </td>
+
+                      <td className="p-3 text-center border border-white">
+                        <div className="flex items-center justify-center gap-2">
+                          <span>{item.username}</span>
+                          <lord-icon 
+                            className="cursor-pointer" 
+                            style={{ width: "20px", height: "20px" }}
+                            src="https://cdn.lordicon.com/xuoapdes.json"
+                            trigger="hover"
+                            onClick={() => copyText(item.username)}
+                          />
+                        </div>
+                      </td>
+
+                      <td className="p-3 text-center border border-white">
+                        <div className="flex items-center justify-center gap-2">
+                          <span>{"*".repeat(item.password.length)}</span>
+                          <lord-icon 
+                            className="cursor-pointer" 
+                            style={{ width: "20px", height: "20px" }}
+                            src="https://cdn.lordicon.com/iykgtsbt.json"
+                            trigger="hover"
+                            onClick={() => copyText(item.password)}
+                          />
+                        </div>
+                      </td>
+
+                      <td className="p-3 text-center border border-white">
+                        <div className="flex justify-center gap-2">
+                          <lord-icon
+                            className="cursor-pointer hover:scale-110 transition-transform"
+                            src="https://cdn.lordicon.com/gwlusjdu.json"
+                            trigger="hover"
+                            style={{ width: "25px", height: "25px" }}
+                            onClick={() => editPassword(item.id)}
+                          />
+                          <lord-icon
+                            className="cursor-pointer hover:scale-110 transition-transform"
+                            src="https://cdn.lordicon.com/skkahier.json"
+                            trigger="hover"
+                            style={{ width: "25px", height: "25px" }}
+                            onClick={() => deletePassword(item.id)}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>
