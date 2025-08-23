@@ -14,7 +14,7 @@ const Footer = () => {
 </lord-icon>
 </div>
     <div className='flex  font-semibold text-white w-80'> 
-      Created with &#10084; Md. Raza Khan
+      Created with &#10084; by Md. Raza Khan
       </div>
       </div>
     
