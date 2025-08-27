@@ -4,10 +4,10 @@ import NextAuth from 'next-auth'
 // import GoogleProvider from 'next-auth/providers/google'
 // import EmailProvider from 'next-auth/providers/email'
 import GitHubProvider from "next-auth/providers/github";
-// import mongoose from "mongoose";
+import mongoose from "mongoose";
 import connectDb from '@/db/connectDb';
 import User from '@/models/User';
-// import Payment from '@/models/Payment';
+import Payment from '@/models/Payment';
  
 
 export const authoptions =  NextAuth({
@@ -52,11 +52,11 @@ export const authoptions =  NextAuth({
          }
       },
       
-    //   async session({ session, user, token }) {
-    //     const dbUser = await User.findOne({email: session.user.email})
-    //     session.user.name = dbUser.username
-    //     return session
-    //   },
+      async session({ session, user, token }) {
+        const dbUser = await User.findOne({email: session.user.email})
+        session.user.name = dbUser.username
+        return session
+      },
     } 
   })
 
