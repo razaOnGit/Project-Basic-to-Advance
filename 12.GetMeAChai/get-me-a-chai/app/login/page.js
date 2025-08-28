@@ -9,11 +9,10 @@ const Login = () => {
 
   useEffect(() => {
     document.title = "Login - Get Me A Chai" 
-    console.log(session)
     if (session) {
       router.push('/dashboard')
     }
-  }, [])
+  }, [session, router])
 
   return (
     <div className='text-white py-14 container mx-auto'>

@@ -13,7 +13,7 @@ import { notFound } from "next/navigation"
 const PaymentPage = ({ username }) => {
     // const { data: session } = useSession()
 
-    const [paymentform, setPaymentform] = useState({name: "", message: "", amount: ""})
+    const [paymentform, setPaymentform] = useState({ name: "", message: "", amount: "" })
     const [currentUser, setcurrentUser] = useState({})
     const [payments, setPayments] = useState([])
     const searchParams = useSearchParams()
@@ -24,23 +24,23 @@ const PaymentPage = ({ username }) => {
     }, [])
 
     useEffect(() => {
-        if(searchParams.get("paymentdone") == "true"){
-        toast('Thanks for your donation!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
+        if (searchParams.get("paymentdone") == "true") {
+            toast.success('Thanks for your donation!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
             });
+            // Clear the URL parameter to prevent toast from showing again
+            router.replace(`/${username}`)
         }
-        router.push(`/${username}`)
-     
-    }, [])
-    
+    }, [searchParams, username, router])
+
 
     const handleChange = (e) => {
         setPaymentform({ ...paymentform, [e.target.name]: e.target.value })
@@ -50,41 +50,80 @@ const PaymentPage = ({ username }) => {
         let u = await fetchuser(username)
         setcurrentUser(u)
         let dbpayments = await fetchpayments(username)
-        setPayments(dbpayments) 
+        setPayments(dbpayments)
     }
 
 
     const pay = async (amount) => {
-        // Get the order Id 
-        let a = await initiate(amount, username, paymentform)
-        let orderId = a.id
-        var options = {
-            "key": currentUser.razorpayid, // Enter the Key ID generated from the Dashboard
-            "amount": amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-            "currency": "INR",
-            "name": "Get Me A Chai", //your business name
-            "description": "Test Transaction",
-            "image": "https://example.com/your_logo",
-            "order_id": orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-            "callback_url": `${process.env.NEXT_PUBLIC_URL}/api/razorpay`,
-            "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-                "name": "Gaurav Kumar", //your customer's name
-                "email": "gaurav.kumar@example.com",
-                "contact": "9000090000" //Provide the customer's phone number for better conversion rates 
-            },
-            "notes": {
-                "address": "Razorpay Corporate Office"
-            },
-            "theme": {
-                "color": "#3399cc"
+        try {
+            // Check if user has Razorpay credentials
+            if (!currentUser.razorpayid || !currentUser.razorpaysecret) {
+                toast.error('Payment not configured for this user. Please contact the user to set up Razorpay credentials.', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
+                });
+                return;
             }
-        }
 
-        var rzp1 = new Razorpay(options);
-        rzp1.open();
+            // Get the order Id 
+            let a = await initiate(amount, username, paymentform)
+            let orderId = a.id
+            var options = {
+                "key": currentUser.razorpayid, // Enter the Key ID generated from the Dashboard
+                "amount": amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "INR",
+                "name": "Get Me A Chai", //your business name
+                "description": "Support " + username + " with a chai!",
+                "image": "https://example.com/your_logo",
+                "order_id": orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                "callback_url": `${process.env.NEXT_PUBLIC_URL}/api/auth/razorpay`,
+                "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+                    "name": paymentform.name || "Supporter", //your customer's name
+                    "email": "supporter@getmeachai.com",
+                    "contact": "9000000000" //Provide the customer's phone number for better conversion rates 
+                },
+                "notes": {
+                    "address": "Get Me A Chai Platform",
+                    "merchant_order_id": orderId,
+                },
+                "theme": {
+                    "color": "#3399cc"
+                },
+                "method": {
+                    "netbanking": true,
+                    "card": true,
+                    "upi": true,
+                    "wallet": true,
+                    "emi": false,
+                    "paylater": true
+                }
+            }
+
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        } catch (error) {
+            toast.error('Payment initiation failed. Please try again.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+        }
     }
 
-    
+
     return (
         <>
             <ToastContainer
@@ -97,9 +136,9 @@ const PaymentPage = ({ username }) => {
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover
-                theme="light" />
-            {/* Same as */}
-            <ToastContainer />
+                theme="light"
+                transition={Bounce}
+            />
             <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
 
 
@@ -119,7 +158,7 @@ const PaymentPage = ({ username }) => {
 
                 </div>
                 <div className='text-slate-400'>
-                  {payments.length} Payments .   ₹{payments.reduce((a, b) => a + b.amount, 0)} raised
+                    {payments.length} Payments .   ₹{payments.reduce((a, b) => a + b.amount, 0)} raised
                 </div>
 
                 <div className="payment flex gap-3 w-[80%] mt-11 flex-col md:flex-row">
@@ -142,6 +181,11 @@ const PaymentPage = ({ username }) => {
 
                     <div className="makePayment w-full md:w-1/2 bg-slate-900 rounded-lg text-white px-2 md:p-10">
                         <h2 className='text-2xl font-bold my-5'>Make a Payment</h2>
+                        {(!currentUser.razorpayid || !currentUser.razorpaysecret) && (
+                            <div className="bg-red-600 text-white p-3 rounded-lg mb-4">
+                                <p className="text-sm">⚠️ Payments are not configured for this user. Please ask {username} to set up their Razorpay credentials in the dashboard.</p>
+                            </div>
+                        )}
                         <div className='flex gap-2 flex-col'>
                             {/* input for name and message   */}
                             <div>
@@ -154,14 +198,14 @@ const PaymentPage = ({ username }) => {
                             <input onChange={handleChange} value={paymentform.amount} name="amount" type="text" className='w-full p-3 rounded-lg bg-slate-800' placeholder='Enter Amount' />
 
 
-                            <button onClick={() => pay(Number.parseInt(paymentform.amount) * 100)} type="button" className="text-white bg-gradient-to-br from-purple-900 to-blue-900 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 disabled:bg-slate-600 disabled:from-purple-100" disabled={paymentform.name?.length < 3 || paymentform.message?.length < 4 || paymentform.amount?.length<1}>Pay</button>
+                            <button onClick={() => pay(Number.parseInt(paymentform.amount) * 100)} type="button" className="text-white bg-gradient-to-br from-purple-900 to-blue-900 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 disabled:bg-slate-600 disabled:from-purple-100" disabled={paymentform.name?.length < 3 || paymentform.message?.length < 4 || paymentform.amount?.length < 1 || !currentUser.razorpayid || !currentUser.razorpaysecret}>Pay</button>
 
                         </div>
                         {/* Or choose from these amounts  */}
                         <div className='flex flex-col md:flex-row gap-2 mt-5'>
-                            <button className='bg-slate-800 p-3 rounded-lg' onClick={() => pay(1000)}>Pay ₹10</button>
-                            <button className='bg-slate-800 p-3 rounded-lg' onClick={() => pay(2000)}>Pay ₹20</button>
-                            <button className='bg-slate-800 p-3 rounded-lg' onClick={() => pay(3000)}>Pay ₹30</button>
+                            <button className='bg-slate-800 p-3 rounded-lg disabled:bg-slate-600 disabled:cursor-not-allowed' disabled={!currentUser.razorpayid || !currentUser.razorpaysecret} onClick={() => pay(1000)}>Pay ₹10</button>
+                            <button className='bg-slate-800 p-3 rounded-lg disabled:bg-slate-600 disabled:cursor-not-allowed' disabled={!currentUser.razorpayid || !currentUser.razorpaysecret} onClick={() => pay(2000)}>Pay ₹20</button>
+                            <button className='bg-slate-800 p-3 rounded-lg disabled:bg-slate-600 disabled:cursor-not-allowed' disabled={!currentUser.razorpayid || !currentUser.razorpaysecret} onClick={() => pay(3000)}>Pay ₹30</button>
                         </div>
                     </div>
                 </div>

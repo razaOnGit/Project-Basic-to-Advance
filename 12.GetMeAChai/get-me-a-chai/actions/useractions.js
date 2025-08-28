@@ -10,6 +10,15 @@ export const initiate = async (amount, to_username, paymentform) => {
     await connectDb()
     // fetch the secret of the user who is getting the payment 
     let user = await User.findOne({username: to_username})
+    
+    if (!user) {
+        throw new Error("User not found")
+    }
+    
+    if (!user.razorpayid || !user.razorpaysecret) {
+        throw new Error("Razorpay credentials not configured for this user")
+    }
+    
     const secret = user.razorpaysecret
 
     var instance = new Razorpay({ key_id: user.razorpayid, key_secret: secret })
