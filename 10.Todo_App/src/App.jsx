@@ -4,10 +4,12 @@ import Navbar from './components/Navbar'
 import Home from './components/Home'
 import SimpleTodo from './components/SimpleTodo'
 import Footer from './components/Footer'
+import ThemeApp from './components/Theme'
 
 const App = () => {
   return (
-  <>
+  
+  <ThemeApp>
  <main>
     <Navbar />
     <Routes>
@@ -16,7 +18,7 @@ const App = () => {
     </Routes>
  </main>
  <Footer />
-  </>
+</ThemeApp>
   )
 }
 

@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react'
 import { FaEdit } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";
 import { v4 as uuidv4 } from 'uuid';
+import { useContext } from 'react';
+import { ThemeContext } from './Theme'; //1 import 1
 
 function App() { 
-
+  const { theme } = useContext(ThemeContext);  //2 function call kro use krna h to
   const [todo, setTodo] = useState("")
   const [todos, setTodos] = useState([])
   const [showFinished, setshowFinished] = useState(true)
@@ -71,7 +73,7 @@ function App() {
 
   return (
     < >
-       <div className="mx-3 md:container md:mx-auto my-5 rounded-xl p-5 bg-violet-100 min-h-[80vh] md:w-[35%]">
+       <div className={`mx-3 md:container md:mx-auto my-5 rounded-xl p-5  min-h-[80vh] md:w-[35%] ${theme ==="light" ? "bg-purple-100 text-black" : "bg-gray-800 text-white"}`}>
         <h1 className='font-bold text-center text-3xl'>iTask - Manage your todos at one place</h1>
          <div className="addTodo my-5 flex flex-col gap-4">
           <h2 className='text-2xl font-bold'>Add a Todo</h2>

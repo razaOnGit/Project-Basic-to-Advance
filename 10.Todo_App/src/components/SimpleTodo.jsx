@@ -1,6 +1,9 @@
 import React,{ useEffect, useState }  from 'react'
+import { useContext } from 'react'
+import { ThemeContext } from './Theme'; //1 import 1
 
 function SimpleTodo()  {
+  const {theme } =useContext(ThemeContext);  //2 function call kro use krna h to
    const [Input, setInput] = useState("")
    const [Tasks, setTasks] = useState(() => {
     
@@ -39,7 +42,7 @@ const toggleComplete = (indexToToggle) => {
   );
 }
   return (
-    <div className='text-3xl font-bold text-center p-4 bg-blue-500 text-white min-h-screen'>
+    <div className={`text-3xl font-bold text-center p-4  ${theme==="light" ? "bg-blue-400" : "bg-gray-800"} text-white min-h-screen`}>
       <h1>Simple Todo App</h1>
       <div>
         <input type="text" placeholder='Add Task' className='p-2 rounded-lg text-black' value={Input}

@@ -1,9 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import{ThemeContext} from './Theme'  //1 import krna h 
+import { useContext } from 'react'
 
 const Navbar = () => {
+  const { theme, toggleTheme } = useContext(ThemeContext);  // 2 function bnao
   return (
-    <nav className='flex justify-between bg-purple-600 text-white py-2'>
+    <nav className={`flex justify-between py-2 ${theme ==="light" ? "bg-purple-600" : "bg-gray-800"} text-white`}>
   <div className="logo">
      <span className="text-xl font-bold p-2">Task Planner</span>
     </div>
@@ -15,6 +18,9 @@ const Navbar = () => {
           <Link to="/SimpleTodo">Simple To-Do</Link>
         </li>
    </ul>
+   <button onClick={toggleTheme} className=' mx-4 px-3 bg-gray-300 text-black  rounded-full hover:bg-gray-400'>
+        {theme === "light" ? "🌙" : "☀️"}
+      </button>
     </nav>
   )
 }
