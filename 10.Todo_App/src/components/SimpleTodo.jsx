@@ -10,7 +10,7 @@ function SimpleTodo()  {
 
    const addTask = ()=>{
     if(Input.trim() === "") return; // Prevent adding empty tasks
-      setTasks([Input, ...Tasks]);  //... ([Tasks, Input)] mtlb new add krne pe last me show hoga 
+      setTasks([ {text:Input, completed:false}, ...Tasks]);  //... ([Tasks, Input)] mtlb new add krne pe last me show hoga 
       setInput("");
     }
     const deleteTask = (indexToDelete) => {
@@ -31,7 +31,13 @@ function SimpleTodo()  {
 //   }
 // }, []);
 
-
+const toggleComplete = (indexToToggle) => {
+  setTasks(
+    Tasks.map((task, index) =>
+      index === indexToToggle ? { ...task, completed: !task.completed } : task
+    )
+  );
+}
   return (
     <div className='text-3xl font-bold text-center p-4 bg-blue-500 text-white min-h-screen'>
       <h1>Simple Todo App</h1>
@@ -45,7 +51,14 @@ function SimpleTodo()  {
           {
             Tasks.map((task, index)=>(
               <li key={index} className='flex justify-between md:w-1/2 mx-auto my-2 bg-white text-black p-2 rounded-lg'>
-                {task}
+              <input
+              type='checkbox'
+              checked={task.completed}
+              onChange={() => toggleComplete(index)}
+            />
+            <span style={{textDecoration:task.completed ? 'line-through' : 'none'}}>
+                {task.text}</span>
+
             <div>
                 <button className='bg-yellow-500 p-1 m-1 rounded-lg' onClick={()=>editTask(index)}>Edit</button>
                 <button className='bg-red-500 p-1 m-1 rounded-lg'onClick={()=> deleteTask(index)}>Delete</button> 
