@@ -49,11 +49,11 @@ const toggleComplete = (indexToToggle) => {
     <div className={`text-3xl font-bold text-center p-4  ${theme==="light" ? "bg-blue-400" : "bg-gray-800"} text-white min-h-screen`}>
       <h1>Simple Todo App</h1>
       <div>
-        <input type="text" 
-        rows='3'
-        placeholder='Add Task' className='p-2 rounded-lg text-black' value={Input}
+        <textarea
+        rows={1}
+        placeholder='Add Task' className=' mt-2 p-2 rounded-lg text-black' value={Input}
          onChange={(e)=>setInput(e.target.value)}/>
-        <button className='bg-green-500 p-2 m-2 rounded-lg' onClick={addTask}>  Add</button>
+        <button className='bg-green-500 p-2 m-1 rounded-lg' onClick={addTask}>  Add</button>
 
         {/* displaying tasks */}
         <ul className='list-disc'>
