@@ -73,7 +73,8 @@ function App() {
 
   return (
     < >
-       <div className={`mx-3 md:container md:mx-auto my-5 rounded-xl p-5  min-h-[80vh] md:w-[35%] ${theme ==="light" ? "bg-purple-100 text-black" : "bg-gray-800 text-white"}`}>
+    <div className='min-h-screen' style={{backgroundColor: theme==="light" ? "#d8b4fe" : "#1f2937"}}>  
+       <div className={`mx-3 md:container md:mx-auto my-5 rounded-xl p-5  min-h-[90vh] md:w-[35%] ${theme ==="light" ? "bg-purple-100 text-black" : "bg-gray-800 text-white"}`}>
         <h1 className='font-bold text-center text-3xl'>iTask - Manage your todos at one place</h1>
          <div className="addTodo my-5 flex flex-col gap-4">
           <h2 className='text-2xl font-bold'>Add a Todo</h2>
@@ -105,6 +106,7 @@ function App() {
          </div>
         
        </div>
+        </div>
     </>
   )
 }

@@ -10,6 +10,10 @@ function SimpleTodo()  {
       const saved = localStorage.getItem("Tasks")
       return saved ? JSON.parse(saved) : []
   })
+  useEffect(() => {
+    localStorage.setItem("Tasks", JSON.stringify(Tasks));
+  }, [Tasks]);
+  
 
    const addTask = ()=>{
     if(Input.trim() === "") return; // Prevent adding empty tasks
@@ -20,7 +24,7 @@ function SimpleTodo()  {
       setTasks(Tasks.filter((_, index) => index !== indexToDelete));
     }
   const editTask = (indexToEdit) => {
-    setInput(Tasks[indexToEdit]);
+    setInput(Tasks[indexToEdit].text);
     setTasks(Tasks.filter((_, index) => index !== indexToEdit));
  
   }
@@ -45,7 +49,9 @@ const toggleComplete = (indexToToggle) => {
     <div className={`text-3xl font-bold text-center p-4  ${theme==="light" ? "bg-blue-400" : "bg-gray-800"} text-white min-h-screen`}>
       <h1>Simple Todo App</h1>
       <div>
-        <input type="text" placeholder='Add Task' className='p-2 rounded-lg text-black' value={Input}
+        <input type="text" 
+        rows='3'
+        placeholder='Add Task' className='p-2 rounded-lg text-black' value={Input}
          onChange={(e)=>setInput(e.target.value)}/>
         <button className='bg-green-500 p-2 m-2 rounded-lg' onClick={addTask}>  Add</button>
 
